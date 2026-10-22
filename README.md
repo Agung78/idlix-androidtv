@@ -120,7 +120,29 @@ Buka aplikasi di Android TV -> Pilih menu **Settings (Pengaturan)** di sidebar -
 
 ---
 
-### 3. Build & Install APK ke TV
+### 3. Cara Memasang (Install) APK ke Android TV
+
+Tersedia dua opsi pemasangan sesuai kenyamanan Anda:
+
+---
+
+#### 🟢 Opsi 1: Untuk Pengguna Awam (Mudah & Tanpa Koding)
+
+> 📖 **Panduan Lengkap & Bergambar**: Lihat panduan komprehensif di [**PANDUAN_INSTALASI_TV.md**](file:///Users/abdi/Documents/Personal%20Workspace/Idlix%20for%20TV/PANDUAN_INSTALASI_TV.md).
+
+Bagi pengguna yang tidak terbiasa dengan terminal/coding, Anda cukup menyiapkan file `app-release.apk` (unduh dari tab *Releases* atau hasil build) dan ikuti salah satu metode berikut:
+
+1. **Aktifkan Izin Sumber Tak Dikenal di TV**:
+   * Masuk ke **Pengaturan TV (Settings)** > **Aplikasi (Apps)** > **Keamanan & Pembatasan (Security & Restrictions)** > Aktifkan izin **Instal Aplikasi Tidak Dikenal (Install unknown apps)** untuk aplikasi File Manager Anda. *(Pada Google TV, klik 7x pada "Android TV OS Build" di menu System > About untuk membuka menu Developer).*
+2. **Pilih Metode Pemasangan**:
+   * **Lewat HP (Aplikasi *Send Files to TV*)**: Pasang aplikasi *Send Files to TV* di HP dan TV dari Google Play Store. Kirim APK dari HP ke TV via Wi-Fi yang sama, lalu buka file dan pilih **Install**.
+   * **Lewat Flashdisk (USB Drive)**: Salin file APK ke Flashdisk dari komputer, colok ke TV, buka aplikasi File Manager (misal: *File Commander* atau *AnExplorer*), lalu klik file APK untuk memasangnya.
+3. **Hubungkan ke Server**:
+   * Buka aplikasi IDLIX di TV -> Buka menu **Pengaturan (Settings)** di sidebar -> Masukkan IP server Backend Anda -> Tekan **Uji Koneksi** -> Tekan **Simpan & Terapkan**.
+
+---
+
+#### 💻 Opsi 2: Untuk Pengembang / Developer (via ADB)
 
 Pastikan Android TV Anda sudah mengaktifkan **Developer Options** dan **ADB Debugging (Network)**:
 
