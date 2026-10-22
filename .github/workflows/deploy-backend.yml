@@ -44,7 +44,7 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          password: ${{ secrets.VPS_PASSWORD }}
           port: ${{ secrets.VPS_PORT || 22 }}
           source: "Backend API/release.tar.gz"
           target: ${{ secrets.VPS_TARGET_DIR }}
@@ -56,20 +56,21 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          password: ${{ secrets.VPS_PASSWORD }}
           port: ${{ secrets.VPS_PORT || 22 }}
-          script_stop: true
           script: |
+            set -e
             echo "📦 Unpacking artifact di VPS..."
-            cd ${{ secrets.VPS_TARGET_DIR }}
+            cd "${{ secrets.VPS_TARGET_DIR }}"
             
             # Ekstrak release
             tar -xzf release.tar.gz
-            rm release.tar.gz
+            rm -f release.tar.gz
             
             # Muat environment PATH Node jika ada
             export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
+            export PATH="$PATH:$HOME/.nvm/versions/node/$(ls $HOME/.nvm/versions/node 2>/dev/null | tail -n 1)/bin:/usr/local/bin:/usr/bin:~/.npm-global/bin"
             
             echo "📥 Menginstall dependensi production saja (--omit=dev)..."
             npm ci --omit=dev
@@ -78,18 +79,17 @@ jobs:
             npx puppeteer browsers install chrome || true
             
             echo "🔄 Merestart aplikasi dengan PM2..."
-            if pm2 describe idlix-backend-api > /dev/null 2>&1; then
-              pm2 reload ecosystem.config.cjs --env production
-            else
-              pm2 start ecosystem.config.cjs --env production
-            fi
+            # Pastikan PM2 tersedia
+            command -v pm2 >/dev/null 2>&1 || npm install -g pm2
             
-            pm2 save
+            # Gunakan pm2 startOrReload (otomatis reload jika sudah ada, atau start jika baru)
+            pm2 startOrReload ecosystem.config.cjs --env production --update-env
+            pm2 save || true
             
             echo "⏳ Menunggu server ready..."
             sleep 8
             
             echo "🩺 Memeriksa health check..."
-            curl -f http://localhost:3000/health || (echo "Health check gagal!" && exit 1)
+            curl -f http://localhost:3000/health || (echo "Health check gagal! Menampilkan log PM2:" && pm2 logs idlix-backend-api --lines 40 --nostream && exit 1)
             
             echo "🎉 Deploy artifact ke VPS berhasil tanpa kompilasi di server!"

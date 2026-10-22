@@ -117,7 +117,7 @@ Buka repositori GitHub Anda di browser:
 | :--- | :--- | :--- |
 | `VPS_HOST` | IP publik VPS Anda | `103.123.45.67` |
 | `VPS_USER` | Username SSH VPS Anda | `ubuntu` atau `root` |
-| `VPS_SSH_KEY` | Isi seluruh teks `~/.ssh/github_actions_key` | `-----BEGIN OPENSSH PRIVATE KEY----- ... -----END OPENSSH PRIVATE KEY-----` |
+| `VPS_PASSWORD` | Password user VPS Anda | `password_vps_anda` |
 | `VPS_PORT` | Port SSH | `22` |
 | `VPS_TARGET_DIR` | Path folder di VPS yang dibuat di langkah 2.3 | `/home/ubuntu/idlix-backend` |
 

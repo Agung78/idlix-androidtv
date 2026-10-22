@@ -133,7 +133,7 @@ Pastikan Android TV Anda sudah mengaktifkan **Developer Options** dan **ADB Debu
    ```bash
    ./gradlew assembleRelease
    ```
-   *File output APK:* `app/build/outputs/apk/release/app-release.apk`
+   *File output APK:* `app/build/outputs/apk/release/app-release.apk` 
 
 3. Install APK ke TV:
    ```bash
