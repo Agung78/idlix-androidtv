@@ -67,7 +67,7 @@ import com.idlix.tv.ui.theme.NetflixWhite
 fun DetailScreen(
     contentType: String,
     slug: String,
-    onNavigateToPlayer: (contentType: String, contentId: String, title: String, poster: String?, backdrop: String?, slug: String?) -> Unit,
+    onNavigateToPlayer: (contentType: String, contentId: String, title: String, poster: String?, backdrop: String?, slug: String?, season: Int?, episode: Int?) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DetailViewModel = viewModel()
 ) {
@@ -209,7 +209,7 @@ fun DetailScreen(
                                 onClick = {
                                     if (contentType == "movie") {
                                         uiState.movie?.let {
-                                            onNavigateToPlayer("movie", it.id, it.title, it.fullPosterUrl, it.fullBackdropUrl, it.slug)
+                                            onNavigateToPlayer("movie", it.id, it.title, it.fullPosterUrl, it.fullBackdropUrl, it.slug, null, null)
                                         }
                                     } else {
                                         val firstEp = uiState.episodes.firstOrNull()
@@ -221,7 +221,9 @@ fun DetailScreen(
                                                 "${uiState.series?.title} - ${firstEp.name}",
                                                 firstEp.fullStillUrl,
                                                 uiState.series?.fullBackdropUrl,
-                                                uiState.series?.slug
+                                                uiState.series?.slug,
+                                                uiState.selectedSeason?.seasonNumber ?: 1,
+                                                firstEp.episodeNumber
                                             )
                                         }
                                     }
@@ -307,7 +309,9 @@ fun DetailScreen(
                                                 "${uiState.series?.title} - ${ep.name}",
                                                 ep.fullStillUrl,
                                                 uiState.series?.fullBackdropUrl,
-                                                uiState.series?.slug
+                                                uiState.series?.slug,
+                                                uiState.selectedSeason?.seasonNumber ?: 1,
+                                                ep.episodeNumber
                                             )
                                         }
                                     )

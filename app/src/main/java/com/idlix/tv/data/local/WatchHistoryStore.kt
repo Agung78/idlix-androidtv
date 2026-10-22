@@ -59,7 +59,9 @@ class WatchHistoryStore private constructor(context: Context) {
         posterUrl: String? = null,
         backdropUrl: String? = null,
         slug: String? = null,
-        episodeTitle: String? = null
+        episodeTitle: String? = null,
+        seasonNumber: Int? = null,
+        episodeNumber: Int? = null
     ) {
         val currentList = loadHistoryFromPrefs().toMutableList()
         val existingIndex = currentList.indexOfFirst { it.contentId == contentId }
@@ -75,6 +77,8 @@ class WatchHistoryStore private constructor(context: Context) {
                 backdropUrl = backdropUrl ?: old.backdropUrl,
                 slug = slug ?: old.slug,
                 episodeTitle = episodeTitle ?: old.episodeTitle,
+                seasonNumber = seasonNumber ?: old.seasonNumber,
+                episodeNumber = episodeNumber ?: old.episodeNumber,
                 positionMs = if (old.positionMs > 0L) old.positionMs else savedPos,
                 durationMs = if (old.durationMs > 0L) old.durationMs else savedDur,
                 lastWatchedTime = System.currentTimeMillis()
@@ -88,6 +92,8 @@ class WatchHistoryStore private constructor(context: Context) {
                 backdropUrl = backdropUrl,
                 slug = slug,
                 episodeTitle = episodeTitle,
+                seasonNumber = seasonNumber,
+                episodeNumber = episodeNumber,
                 positionMs = savedPos,
                 durationMs = savedDur,
                 lastWatchedTime = System.currentTimeMillis()

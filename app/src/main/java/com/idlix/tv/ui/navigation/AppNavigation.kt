@@ -115,8 +115,8 @@ private fun androidx.navigation.NavGraphBuilder.setupNavRoutes(
 
     composable(Screen.ContinueWatching.route) {
         ContinueWatchingScreen(
-            onNavigateToPlayer = { type, id, title, poster, backdrop, slug ->
-                navController.navigate(Screen.Player.createRoute(type, id, title, poster, backdrop, slug))
+            onNavigateToPlayer = { type, id, title, poster, backdrop, slug, season, episode ->
+                navController.navigate(Screen.Player.createRoute(type, id, title, poster, backdrop, slug, season, episode))
             },
             onNavigateToHome = {
                 navController.navigate(Screen.Home.route) {
@@ -173,8 +173,8 @@ private fun androidx.navigation.NavGraphBuilder.setupNavRoutes(
         DetailScreen(
             contentType = contentType,
             slug = slug,
-            onNavigateToPlayer = { type, id, title, poster, backdrop, slugParam ->
-                navController.navigate(Screen.Player.createRoute(type, id, title, poster, backdrop, slugParam))
+            onNavigateToPlayer = { type, id, title, poster, backdrop, slugParam, season, episode ->
+                navController.navigate(Screen.Player.createRoute(type, id, title, poster, backdrop, slugParam, season, episode))
             }
         )
     }
@@ -196,6 +196,16 @@ private fun androidx.navigation.NavGraphBuilder.setupNavRoutes(
                 defaultValue = ""
             },
             navArgument("slug") {
+                type = NavType.StringType
+                nullable = true
+                defaultValue = ""
+            },
+            navArgument("season") {
+                type = NavType.StringType
+                nullable = true
+                defaultValue = ""
+            },
+            navArgument("episode") {
                 type = NavType.StringType
                 nullable = true
                 defaultValue = ""
@@ -228,6 +238,8 @@ private fun androidx.navigation.NavGraphBuilder.setupNavRoutes(
         } catch (e: Exception) {
             rawSlug.takeIf { it.isNotBlank() }
         }
+        val season = backStackEntry.arguments?.getString("season")?.toIntOrNull()
+        val episode = backStackEntry.arguments?.getString("episode")?.toIntOrNull()
 
         PlayerScreen(
             contentType = contentType,
@@ -236,6 +248,8 @@ private fun androidx.navigation.NavGraphBuilder.setupNavRoutes(
             posterUrl = poster,
             backdropUrl = backdrop,
             slug = slug,
+            seasonNumber = season,
+            episodeNumber = episode,
             onBack = { navController.popBackStack() }
         )
     }

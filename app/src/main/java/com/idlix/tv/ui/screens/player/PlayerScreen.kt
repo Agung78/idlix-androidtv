@@ -21,6 +21,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -127,6 +128,8 @@ fun PlayerScreen(
     posterUrl: String? = null,
     backdropUrl: String? = null,
     slug: String? = null,
+    seasonNumber: Int? = null,
+    episodeNumber: Int? = null,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PlayerViewModel = viewModel()
@@ -139,6 +142,12 @@ fun PlayerScreen(
     var currentPos by remember { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(0L) }
     var isPlaying by remember { mutableStateOf(true) }
+    var isScrubbing by remember { mutableStateOf(false) }
+    var userInteractionCount by remember { mutableIntStateOf(0) }
+
+    val remainingMs = if (duration > 0L) (duration - currentPos).coerceAtLeast(0L) else Long.MAX_VALUE
+    val isNearEnd = duration > 120_000L && remainingMs in 1L..90_000L
+    val isNextPromptVisible = isNearEnd && uiState.nextEpisode != null && !uiState.isNextEpisodeDismissed
 
     val rootFocusRequester = remember { FocusRequester() }
     val playButtonFocusRequester = remember { FocusRequester() }
@@ -152,7 +161,9 @@ fun PlayerScreen(
             title = title,
             posterUrl = posterUrl,
             backdropUrl = backdropUrl,
-            slug = slug
+            slug = slug,
+            seasonNumber = seasonNumber,
+            episodeNumber = episodeNumber
         )
     }
 
@@ -160,22 +171,27 @@ fun PlayerScreen(
         rootFocusRequester.requestFocus()
     }
 
-    // Auto-hide controls after 6 seconds of inactivity & request focus to controls
-    LaunchedEffect(showControls, uiState.isSubtitlePickerVisible) {
-        if (uiState.isSubtitlePickerVisible) {
-            // Keep controls/modal open while user is selecting subtitles
+    // Auto-hide controls after 6 seconds of inactivity, paused during modal or scrubbing
+    LaunchedEffect(showControls, uiState.isSubtitlePickerVisible, isScrubbing, userInteractionCount) {
+        if (uiState.isSubtitlePickerVisible || isScrubbing) {
+            // Keep controls open while user is selecting subtitles or scrubbing the seekbar
             return@LaunchedEffect
         }
         if (showControls) {
-            delay(50)
-            try {
-                playButtonFocusRequester.requestFocus()
-            } catch (e: Exception) {}
             delay(6000)
             showControls = false
         } else {
             try {
                 rootFocusRequester.requestFocus()
+            } catch (e: Exception) {}
+        }
+    }
+
+    LaunchedEffect(showControls) {
+        if (showControls) {
+            delay(50)
+            try {
+                playButtonFocusRequester.requestFocus()
             } catch (e: Exception) {}
         }
     }
@@ -192,6 +208,13 @@ fun PlayerScreen(
                         KeyEvent.KEYCODE_BACK -> {
                             if (uiState.isSubtitlePickerVisible) {
                                 viewModel.closeSubtitlePicker()
+                                true
+                            } else if (isNextPromptVisible) {
+                                viewModel.dismissNextEpisode()
+                                true
+                            } else if (isScrubbing) {
+                                isScrubbing = false
+                                playButtonFocusRequester.requestFocus()
                                 true
                             } else if (showControls) {
                                 showControls = false
@@ -465,8 +488,20 @@ fun PlayerScreen(
             }
 
             DisposableEffect(exoPlayer) {
+                val playerListener = object : Player.Listener {
+                    override fun onPlaybackStateChanged(playbackState: Int) {
+                        if (playbackState == Player.STATE_ENDED) {
+                            if (uiState.nextEpisode != null && !uiState.isNextEpisodeDismissed) {
+                                viewModel.playNextEpisode()
+                            }
+                        }
+                    }
+                }
+                exoPlayer.addListener(playerListener)
+
                 onDispose {
                     try {
+                        exoPlayer.removeListener(playerListener)
                         val finalPos = exoPlayer.currentPosition
                         val finalDur = exoPlayer.duration
                         if (finalDur > 0) {
@@ -511,14 +546,28 @@ fun PlayerScreen(
                         exoPlayer.play()
                     }
                     showControls = true
+                    userInteractionCount++
                 },
                 onSeekBackward = {
                     exoPlayer.seekTo((exoPlayer.currentPosition - 10000L).coerceAtLeast(0L))
                     showControls = true
+                    userInteractionCount++
                 },
                 onSeekForward = {
                     exoPlayer.seekTo((exoPlayer.currentPosition + 10000L).coerceAtMost(exoPlayer.duration))
                     showControls = true
+                    userInteractionCount++
+                },
+                onSeekTo = { targetMs ->
+                    exoPlayer.seekTo(targetMs)
+                    showControls = true
+                    userInteractionCount++
+                },
+                onScrubbingChanged = { scrubbing ->
+                    isScrubbing = scrubbing
+                },
+                onUserInteraction = {
+                    userInteractionCount++
                 },
                 onToggleSubtitle = {
                     val willBeEnabled = !uiState.isSubtitleEnabled
@@ -534,9 +583,11 @@ fun PlayerScreen(
                     }
                     exoPlayer.trackSelectionParameters = trackSelector.build()
                     showControls = true
+                    userInteractionCount++
                 },
                 onOpenSubtitlePicker = {
                     viewModel.openSubtitlePicker()
+                    userInteractionCount++
                 }
             )
 
@@ -564,6 +615,27 @@ fun PlayerScreen(
                     viewModel.closeSubtitlePicker()
                 }
             )
+            // Next Episode Prompt for TV Series (When <= 90s remaining)
+            if (uiState.nextEpisode != null) {
+                val remainingSec = (remainingMs / 1000).toInt().coerceAtLeast(0)
+                TvNextEpisodePrompt(
+                    nextEpisode = uiState.nextEpisode!!,
+                    remainingSeconds = remainingSec,
+                    isVisible = isNextPromptVisible && !uiState.isSubtitlePickerVisible,
+                    onPlayNext = {
+                        viewModel.playNextEpisode()
+                    },
+                    onDismiss = {
+                        viewModel.dismissNextEpisode()
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(
+                            end = 36.dp,
+                            bottom = if (showControls) 115.dp else 40.dp
+                        )
+                )
+            }
         }
     }
 }

@@ -90,4 +90,10 @@
     <string name="subdl_quota_error">SubDL menolak: status false atau kuota habis</string>
     <string name="subdl_invalid_http">SubDL merespon HTTP %d (Key tidak valid)</string>
     <string name="subdl_failed_error">Gagal menghubungi SubDL: %s</string>
+    <string name="seek_mode">MODE GESER</string>
+    <string name="press_ok_to_play">Tekan OK untuk putar</string>
+    <string name="jumping_to">Melompat ke %s…</string>
+    <string name="play_next_episode">Putar Sekarang</string>
+    <string name="next_episode_in_seconds">Putar otomatis dalam %ds</string>
+    <string name="dismiss">Tutup</string>
 </resources>

@@ -51,7 +51,7 @@ import com.idlix.tv.ui.theme.NetflixWhite
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun ContinueWatchingScreen(
-    onNavigateToPlayer: (contentType: String, contentId: String, title: String, poster: String?, backdrop: String?, slug: String?) -> Unit,
+    onNavigateToPlayer: (contentType: String, contentId: String, title: String, poster: String?, backdrop: String?, slug: String?, season: Int?, episode: Int?) -> Unit,
     onNavigateToHome: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ContinueWatchingViewModel = viewModel()
@@ -194,7 +194,9 @@ fun ContinueWatchingScreen(
                                         item.title,
                                         item.posterUrl,
                                         item.backdropUrl,
-                                        item.slug
+                                        item.slug,
+                                        item.seasonNumber,
+                                        item.episodeNumber
                                     )
                                 },
                                 width = 230,
@@ -215,7 +217,9 @@ fun ContinueWatchingScreen(
                                             item.title,
                                             item.posterUrl,
                                             item.backdropUrl,
-                                            item.slug
+                                            item.slug,
+                                            item.seasonNumber,
+                                            item.episodeNumber
                                         )
                                     },
                                     colors = ButtonDefaults.colors(

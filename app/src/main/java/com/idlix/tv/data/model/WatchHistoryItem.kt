@@ -11,6 +11,8 @@ data class WatchHistoryItem(
     val backdropUrl: String? = null,
     val slug: String? = null,
     val episodeTitle: String? = null,
+    val seasonNumber: Int? = null,
+    val episodeNumber: Int? = null,
     val positionMs: Long = 0L,
     val durationMs: Long = 0L,
     val lastWatchedTime: Long = System.currentTimeMillis()
