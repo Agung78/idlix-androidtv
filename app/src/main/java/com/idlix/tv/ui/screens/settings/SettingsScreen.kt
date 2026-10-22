@@ -278,7 +278,7 @@ fun SettingsScreen(
                     decorationBox = { inner ->
                         if (inputUrl.isEmpty()) {
                             Text(
-                                text = "http://192.168.x.x:3000/",
+                                text = "http://192.168.x.x:5376/",
                                 color = NetflixLightGray,
                                 fontSize = 13.sp
                             )

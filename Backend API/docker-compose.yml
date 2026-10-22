@@ -8,9 +8,9 @@ services:
     container_name: idlix-backend-api
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "5376:5376"
     environment:
-      - PORT=3000
+      - PORT=5376
       - HOST=0.0.0.0
       - IDLIX_BASE_URL=https://z2.idlixku.com
       - LOG_LEVEL=info

@@ -9,7 +9,7 @@ module.exports = {
       max_memory_restart: '800M',
       env: {
         NODE_ENV: 'production',
-        PORT: 3000,
+        PORT: 5376,
         HOST: '0.0.0.0',
         IDLIX_BASE_URL: 'https://z2.idlixku.com',
         LOG_LEVEL: 'info',

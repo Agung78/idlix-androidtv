@@ -20,11 +20,11 @@ flowchart TD
         C -- "SCP (Secure Copy via SSH)" --> D["Server VPS (Host OS)"]
     end
 
-    subgraph VPS_Server ["Server VPS (:3000)"]
+    subgraph VPS_Server ["Server VPS (:5376)"]
         D --> E["tar -xzf release.tar.gz"]
         E --> F["npm ci --omit=dev (Production Only)"]
         F --> G["pm2 reload idlix-backend-api"]
-        G --> H["Health Check (:3000/health)"]
+        G --> H["Health Check (:5376/health)"]
     end
 ```
 
@@ -85,9 +85,9 @@ mkdir -p ~/idlix-backend
 ```
 *(Tidak perlu `git clone` di folder ini, karena GitHub Actions yang akan mengirim rilis siap pakai ke folder ini).*
 
-### Langkah 2.4: Buka Port 3000 di Firewall
+### Langkah 2.4: Buka Port 5376 di Firewall
 ```bash
-sudo ufw allow 3000/tcp
+sudo ufw allow 5376/tcp
 sudo ufw reload
 ```
 
@@ -138,7 +138,7 @@ Saat Anda melakukan `git push origin main`:
    - Menjalankan `npm ci --omit=dev` (hanya menginstall modul runtime produksi, super cepat).
    - Memastikan browser Puppeteer siap.
    - Mereload service dengan PM2 tanpa downtime: `pm2 reload ecosystem.config.cjs`.
-   - Memverifikasi respon `http://localhost:3000/health`.
+   - Memverifikasi respon `http://localhost:5376/health`.
 
 ---
 
@@ -165,7 +165,7 @@ Jika ingin memakai domain dan SSL gratis:
 2. Isi `/etc/caddy/Caddyfile`:
    ```caddy
    api.domainanda.com {
-       reverse_proxy localhost:3000
+       reverse_proxy localhost:5376
    }
    ```
 3. Restart Caddy: `sudo systemctl restart caddy`.

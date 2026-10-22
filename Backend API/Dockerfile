@@ -45,7 +45,7 @@ RUN apt-get update \
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
     NODE_ENV=production \
-    PORT=3000 \
+    PORT=5376 \
     HOST=0.0.0.0
 
 WORKDIR /app
@@ -65,6 +65,6 @@ RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
 
 USER pptruser
 
-EXPOSE 3000
+EXPOSE 5376
 
 CMD ["node", "dist/server.js"]

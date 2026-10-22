@@ -30,8 +30,8 @@ By running this backend service, the Android TV app does not need any Android `W
 
 4. Uji endpoint:
    ```bash
-   curl http://localhost:3000/health
-   curl "http://localhost:3000/api/movies?page=1&limit=5"
+   curl http://localhost:5376/health
+   curl "http://localhost:5376/api/movies?page=1&limit=5"
    ```
 
 ---

@@ -90,7 +90,7 @@ docker compose up -d --build # atau podman compose up -d --build
 ```
 Cek apakah server sudah aktif:
 ```bash
-curl http://localhost:3000/health
+curl http://localhost:5376/health
 ```
 
 #### Opsi B: Menggunakan Node.js Lokal
@@ -111,7 +111,7 @@ Ada dua cara mudah:
 Buka file `local.properties` di root folder proyek:
 ```properties
 sdk.dir=/path/to/android/sdk
-backendApiUrl=http://192.168.x.x:3000/
+backendApiUrl=http://192.168.x.x:5376/
 ```
 *(Ganti `192.168.x.x` dengan IP lokal komputer/VPS yang menjalankan Backend API).*
 

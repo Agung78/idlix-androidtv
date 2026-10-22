@@ -90,6 +90,6 @@ jobs:
             sleep 8
             
             echo "🩺 Memeriksa health check..."
-            curl -f http://localhost:3000/health || (echo "Health check gagal! Menampilkan log PM2:" && pm2 logs idlix-backend-api --lines 40 --nostream && exit 1)
+            curl -f http://localhost:5376/health || (echo "Health check gagal! Menampilkan log PM2:" && pm2 logs idlix-backend-api --lines 40 --nostream && exit 1)
             
             echo "🎉 Deploy artifact ke VPS berhasil tanpa kompilasi di server!"

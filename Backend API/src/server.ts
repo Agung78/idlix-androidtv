@@ -17,7 +17,7 @@ async function main() {
 
   await fastify.register(apiRoutes);
 
-  const port = parseInt(process.env.PORT || '3000', 10);
+  const port = parseInt(process.env.PORT || '5376', 10);
   const host = process.env.HOST || '0.0.0.0';
 
   try {
