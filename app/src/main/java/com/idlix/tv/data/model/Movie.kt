@@ -25,6 +25,7 @@ data class MovieItem(
     val runtime: Int? = null,
     val originalLanguage: String? = null,
     val contentType: String = "movie",
+    val overview: String? = null,
     val genres: List<Genre> = emptyList(),
     val hasVideo: Boolean = true
 ) {

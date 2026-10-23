@@ -41,25 +41,25 @@ import coil.request.ImageRequest
 import coil.size.Precision
 import com.idlix.tv.R
 import com.idlix.tv.data.model.MovieItem
-import com.idlix.tv.ui.theme.NetflixBlack
-import com.idlix.tv.ui.theme.NetflixGold
-import com.idlix.tv.ui.theme.NetflixLightGray
-import com.idlix.tv.ui.theme.NetflixRed
-import com.idlix.tv.ui.theme.NetflixWhite
+import com.idlix.tv.ui.theme.TvBackground
+import com.idlix.tv.ui.theme.TvGold
+import com.idlix.tv.ui.theme.TvMuted
+import com.idlix.tv.ui.theme.TvBrand
+import com.idlix.tv.ui.theme.TvOnSurface
 
 private val HeroBottomBrush = Brush.verticalGradient(
     colors = listOf(
         Color.Transparent,
-        NetflixBlack.copy(alpha = 0.5f),
-        NetflixBlack
+        TvBackground.copy(alpha = 0.5f),
+        TvBackground
     ),
     startY = 80f
 )
 
 private val HeroLeftBrush = Brush.horizontalGradient(
     colors = listOf(
-        NetflixBlack.copy(alpha = 0.95f),
-        NetflixBlack.copy(alpha = 0.6f),
+        TvBackground.copy(alpha = 0.95f),
+        TvBackground.copy(alpha = 0.6f),
         Color.Transparent
     )
 )
@@ -83,14 +83,16 @@ fun TvHeroBillboard(
             .size(1280, 720)
             .precision(Precision.INEXACT)
             .allowRgb565(true)
-            .crossfade(false)
+            .crossfade(true)
             .build()
     }
+
+    val metaLine = buildMetaLine(movie)
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(340.dp)
+            .height(420.dp)
     ) {
         // Dynamic Backdrop
         AsyncImage(
@@ -120,20 +122,32 @@ fun TvHeroBillboard(
             modifier = Modifier
                 .fillMaxHeight()
                 .width(480.dp)
-                .padding(start = 24.dp, top = 24.dp, bottom = 20.dp),
+                .padding(start = 48.dp, top = 24.dp, bottom = 20.dp),
             verticalArrangement = Arrangement.Bottom
         ) {
             // Title
             Text(
                 text = movie.title,
-                color = NetflixWhite,
-                fontSize = 28.sp,
+                color = TvOnSurface,
+                fontSize = 36.sp,
                 fontWeight = FontWeight.Black,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
 
             Spacer(modifier = Modifier.height(6.dp))
+
+            // Synopsis
+            if (!movie.overview.isNullOrBlank()) {
+                Text(
+                    text = movie.overview,
+                    color = TvMuted,
+                    fontSize = 14.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+            }
 
             // Metadata Badges (Rating, Year, Quality)
             Row(
@@ -145,13 +159,13 @@ fun TvHeroBillboard(
                         Icon(
                             imageVector = Icons.Default.Star,
                             contentDescription = null,
-                            tint = NetflixGold,
+                            tint = TvGold,
                             modifier = Modifier.size(14.dp)
                         )
                         Spacer(modifier = Modifier.width(3.dp))
                         Text(
                             text = "${movie.formattedRating} / 10",
-                            color = NetflixWhite,
+                            color = TvOnSurface,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -161,7 +175,7 @@ fun TvHeroBillboard(
                 movie.releaseDate?.take(4)?.let { year ->
                     Text(
                         text = year,
-                        color = NetflixLightGray,
+                        color = TvMuted,
                         fontSize = 12.sp
                     )
                 }
@@ -174,11 +188,21 @@ fun TvHeroBillboard(
                     ) {
                         Text(
                             text = q,
-                            color = NetflixWhite,
+                            color = TvOnSurface,
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
+                }
+
+                if (metaLine.isNotBlank()) {
+                    Text(
+                        text = metaLine,
+                        color = TvMuted,
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
 
@@ -192,10 +216,10 @@ fun TvHeroBillboard(
                     onClick = onPlayClick,
                     modifier = playButtonModifier,
                     colors = ButtonDefaults.colors(
-                        containerColor = NetflixWhite,
-                        contentColor = NetflixBlack,
-                        focusedContainerColor = NetflixRed,
-                        focusedContentColor = NetflixWhite
+                        containerColor = TvOnSurface,
+                        contentColor = TvBackground,
+                        focusedContainerColor = TvBrand,
+                        focusedContentColor = TvOnSurface
                     ),
                     shape = ButtonDefaults.shape(shape = RoundedCornerShape(6.dp))
                 ) {
@@ -220,9 +244,9 @@ fun TvHeroBillboard(
                     onClick = onDetailsClick,
                     colors = ButtonDefaults.colors(
                         containerColor = Color(0x66FFFFFF),
-                        contentColor = NetflixWhite,
-                        focusedContainerColor = NetflixWhite,
-                        focusedContentColor = NetflixBlack
+                        contentColor = TvOnSurface,
+                        focusedContainerColor = TvOnSurface,
+                        focusedContentColor = TvBackground
                     ),
                     shape = ButtonDefaults.shape(shape = RoundedCornerShape(6.dp))
                 ) {
@@ -245,4 +269,11 @@ fun TvHeroBillboard(
             }
         }
     }
+}
+
+private fun buildMetaLine(movie: MovieItem): String {
+    val parts = mutableListOf<String>()
+    movie.genres.take(3).mapTo(parts) { it.name }
+    movie.country?.takeIf { it.isNotBlank() }?.let { parts.add(it) }
+    return parts.joinToString(" • ")
 }

@@ -18,8 +18,8 @@ import com.idlix.tv.R
 import com.idlix.tv.ui.components.TvHeroBillboard
 import com.idlix.tv.ui.components.TvLoadingSpinner
 import com.idlix.tv.ui.components.TvSwimlaneRow
-import com.idlix.tv.ui.theme.NetflixBlack
-import com.idlix.tv.ui.theme.NetflixWhite
+import com.idlix.tv.ui.theme.TvBackground
+import com.idlix.tv.ui.theme.TvOnSurface
 
 @Composable
 fun MoviesScreen(
@@ -33,7 +33,7 @@ fun MoviesScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(NetflixBlack)
+            .background(TvBackground)
     ) {
         if (uiState.isLoading) {
             TvLoadingSpinner(
@@ -42,7 +42,7 @@ fun MoviesScreen(
         } else if (uiState.error != null) {
             Text(
                 text = uiState.error ?: "",
-                color = NetflixWhite,
+                color = TvOnSurface,
                 modifier = Modifier
                     .align(Alignment.Center)
                     .padding(24.dp)

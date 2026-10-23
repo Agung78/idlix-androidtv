@@ -61,10 +61,10 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
 import com.idlix.tv.R
 import com.idlix.tv.ui.components.TvLoadingSpinner
-import com.idlix.tv.ui.theme.NetflixBlack
-import com.idlix.tv.ui.theme.NetflixLightGray
-import com.idlix.tv.ui.theme.NetflixRed
-import com.idlix.tv.ui.theme.NetflixWhite
+import com.idlix.tv.ui.theme.TvBackground
+import com.idlix.tv.ui.theme.TvMuted
+import com.idlix.tv.ui.theme.TvBrand
+import com.idlix.tv.ui.theme.TvOnSurface
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.ArrayList
@@ -199,7 +199,7 @@ fun PlayerScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(NetflixBlack)
+            .background(TvBackground)
             .focusRequester(rootFocusRequester)
             .focusable()
             .onKeyEvent { keyEvent ->
@@ -283,20 +283,20 @@ fun PlayerScreen(
                 if (uiState.countdownSeconds > 0) {
                     Text(
                         text = stringResource(R.string.loading_secure_stream),
-                        color = NetflixWhite,
+                        color = TvOnSurface,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = stringResource(R.string.starting_in_seconds, uiState.countdownSeconds),
-                        color = NetflixLightGray,
+                        color = TvMuted,
                         fontSize = 13.sp
                     )
                 } else {
                     Text(
                         text = stringResource(R.string.connecting_to_media),
-                        color = NetflixLightGray,
+                        color = TvMuted,
                         fontSize = 14.sp
                     )
                 }
@@ -311,7 +311,7 @@ fun PlayerScreen(
             ) {
                 Text(
                     text = uiState.error ?: stringResource(R.string.failed_to_play),
-                    color = NetflixWhite,
+                    color = TvOnSurface,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -320,8 +320,8 @@ fun PlayerScreen(
                     Button(
                         onClick = { viewModel.loadStream(contentType, contentId, title) },
                         colors = ButtonDefaults.colors(
-                            containerColor = NetflixRed,
-                            contentColor = NetflixWhite
+                            containerColor = TvBrand,
+                            contentColor = TvOnSurface
                         )
                     ) {
                         Text(text = stringResource(R.string.try_again))
@@ -330,8 +330,8 @@ fun PlayerScreen(
                     Button(
                         onClick = onBack,
                         colors = ButtonDefaults.colors(
-                            containerColor = NetflixLightGray.copy(alpha = 0.3f),
-                            contentColor = NetflixWhite
+                            containerColor = TvMuted.copy(alpha = 0.3f),
+                            contentColor = TvOnSurface
                         )
                     ) {
                         Text(text = stringResource(R.string.back))
@@ -513,7 +513,7 @@ fun PlayerScreen(
                 }
             }
 
-            // Video Surface with high-visibility Netflix-style subtitles
+            // Video Surface with high-visibility Tv-style subtitles
             AndroidView(
                 factory = { ctx ->
                     PlayerView(ctx).apply {
@@ -522,7 +522,7 @@ fun PlayerScreen(
                         subtitleView?.apply {
                             setUserDefaultStyle()
                             setUserDefaultTextSize()
-                            setFractionalTextSize(0.053f) // Standard Netflix TV subtitle proportion
+                            setFractionalTextSize(0.053f) // Standard Tv TV subtitle proportion
                         }
                     }
                 },

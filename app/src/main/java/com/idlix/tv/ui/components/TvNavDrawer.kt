@@ -45,15 +45,14 @@ import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Card
 import androidx.tv.material3.CardDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
-import androidx.tv.material3.Glow
 import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
 import com.idlix.tv.R
-import com.idlix.tv.ui.theme.NetflixBlack
-import com.idlix.tv.ui.theme.NetflixDarkCard
-import com.idlix.tv.ui.theme.NetflixLightGray
-import com.idlix.tv.ui.theme.NetflixRed
-import com.idlix.tv.ui.theme.NetflixWhite
+import com.idlix.tv.ui.theme.TvBackground
+import com.idlix.tv.ui.theme.TvMuted
+import com.idlix.tv.ui.theme.TvBrand
+import com.idlix.tv.ui.theme.TvOnSurface
+import com.idlix.tv.ui.theme.TvSurface
 
 enum class NavItem(val labelRes: Int, val icon: ImageVector) {
     HOME(R.string.home, Icons.Default.Home),
@@ -87,7 +86,7 @@ fun TvNavDrawer(
         }
     }
 
-    Box(modifier = modifier.fillMaxSize().background(NetflixBlack)) {
+    Box(modifier = modifier.fillMaxSize().background(TvBackground)) {
         // 1. Screen Content: Fixed start padding ensures content never resizes or relayouts during animation
         Box(
             modifier = Modifier
@@ -111,7 +110,7 @@ fun TvNavDrawer(
             modifier = Modifier
                 .fillMaxHeight()
                 .width(drawerWidth)
-                .background(NetflixBlack.copy(alpha = if (isExpanded) 0.98f else 0.92f))
+                .background(TvBackground.copy(alpha = if (isExpanded) 0.98f else 0.92f))
                 .padding(vertical = 24.dp, horizontal = 10.dp)
                 .onFocusChanged { isExpanded = it.hasFocus },
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -146,12 +145,12 @@ fun TvNavDrawer(
                         .height(44.dp)
                         .then(if (item == NavItem.HOME) Modifier.focusRequester(homeFocusRequester) else Modifier)
                         .onFocusChanged { itemFocused = it.isFocused },
-                    scale = CardDefaults.scale(focusedScale = 1.0f),
-                    glow = CardDefaults.glow(focusedGlow = Glow.None),
+                    scale = tvCardScale(),
+                    glow = tvCardGlow(),
                     shape = CardDefaults.shape(shape = RoundedCornerShape(8.dp)),
                     colors = CardDefaults.colors(
-                        containerColor = if (itemFocused) NetflixDarkCard else Color.Transparent,
-                        focusedContainerColor = NetflixRed
+                        containerColor = if (itemFocused) TvSurface else Color.Transparent,
+                        focusedContainerColor = TvBrand
                     )
                 ) {
                     Row(
@@ -163,14 +162,14 @@ fun TvNavDrawer(
                         Icon(
                             imageVector = item.icon,
                             contentDescription = stringResource(item.labelRes),
-                            tint = if (itemFocused || isSelected) NetflixWhite else NetflixLightGray,
+                            tint = if (itemFocused || isSelected) TvOnSurface else TvMuted,
                             modifier = Modifier.size(20.dp)
                         )
                         if (isExpanded) {
                             Spacer(modifier = Modifier.width(12.dp))
                             Text(
                                 text = stringResource(item.labelRes),
-                                color = if (itemFocused || isSelected) NetflixWhite else NetflixLightGray,
+                                color = if (itemFocused || isSelected) TvOnSurface else TvMuted,
                                 fontSize = 13.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                             )
