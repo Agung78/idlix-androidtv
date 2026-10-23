@@ -127,23 +127,6 @@ export const apiRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) =>
     return reply.status(result.status).send(result.data);
   });
 
-  // Genres
-  fastify.get('/api/genres', async (_req, reply) => {
-    const cacheKey = 'genres:all';
-    const cached = globalCache.get(cacheKey);
-    if (cached) {
-      return cached;
-    }
-
-    const result = await engine.executeFetch('/api/genres');
-    if (result.status === 200 && result.data) {
-      globalCache.set(cacheKey, result.data, 2 * 60 * 60 * 1000); // 2 hours
-      return result.data;
-    }
-
-    return reply.status(result.status).send(result.data);
-  });
-
   // Search
   fastify.get<{ Querystring: { q?: string } }>('/api/search', async (req, reply) => {
     const query = req.query.q?.trim();
@@ -202,27 +185,6 @@ export const apiRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) =>
     return reply.status(result.status).send(result.data);
   });
 
-  // Redeem Play (Majorplay CDN)
-  fastify.post<{ Body: { url?: string; claim: string; mode?: string } }>(
-    '/api/watch/redeem',
-    async (req, reply) => {
-      const { url = 'https://e2e.majorplay.net/api/play', claim, mode = 'browser' } = req.body;
-      if (!claim) {
-        return reply.status(400).send({ error: 'claim is required' });
-      }
-
-      const result = await engine.executeFetch(url, {
-        method: 'POST',
-        body: { claim, mode },
-        headers: {
-          Referer: 'https://z2.idlixku.com/',
-          Origin: 'https://z2.idlixku.com',
-        },
-      });
-
-      return reply.status(result.status).send(result.data);
-    }
-  );
 
   // High-performance All-in-One Playback Resolver
   fastify.get<{

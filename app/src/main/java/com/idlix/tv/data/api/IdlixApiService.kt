@@ -3,7 +3,6 @@ package com.idlix.tv.data.api
 import com.idlix.tv.data.model.ClaimRequest
 import com.idlix.tv.data.model.ClaimResponse
 import com.idlix.tv.data.model.EpisodeResponse
-import com.idlix.tv.data.model.GenreListResponse
 import com.idlix.tv.data.model.MovieDetail
 import com.idlix.tv.data.model.MovieListResponse
 import com.idlix.tv.data.model.PlayInfoResponse
@@ -52,9 +51,6 @@ interface IdlixApiService {
         @Path("season") season: Int,
         @Path("episode") episode: Int
     ): EpisodeResponse
-
-    @GET("api/genres")
-    suspend fun getGenres(): GenreListResponse
 
     @GET("api/search")
     suspend fun search(

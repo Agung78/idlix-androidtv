@@ -111,10 +111,3 @@ fun TvErrorWithRetry(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Composable
-fun TvLoadingRow(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.size(48.dp), contentAlignment = Alignment.Center) {
-        TvLoadingSpinner(color = TvBrand)
-    }
-}
