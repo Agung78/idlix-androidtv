@@ -13,6 +13,7 @@ class IdlixTvApp : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         appContext = this
+        ApiClient.discoverBackend()
     }
 
     override fun newImageLoader(): ImageLoader {
