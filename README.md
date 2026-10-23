@@ -1,5 +1,9 @@
 # IDLIX for Android TV 🎬📺
 
+<p align="center">
+  <img width="460" height="300" src="https://cdn.abdilah.id/uploads/com.idlix.tv-preview.png">
+</p>
+
 A modern, high-performance, **100% native Android TV** application for streaming movies and TV series from IDLIX with an intuitive Netflix-style Leanback user interface.
 
 The project is split into two complementary modules:
